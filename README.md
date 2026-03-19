@@ -40,3 +40,7 @@ All operations are performed through a **Command Line Interface (CLI)**.
 | Mostafa  | Create, List, Drop Tables. Implement Insert, Select, Update, Delete operations. Handle data validation and formatting. |
 | Both     | Shared helper functions, testing, and integration. |
 
+## References
+- https://www.youtube.com/watch?v=x5B6p7JoNwE
+- https://www.youtube.com/watch?v=zfPFzhoIKnU
+- https://linuxsimply.com/bash-scripting-tutorial/variables/types/ps3/
