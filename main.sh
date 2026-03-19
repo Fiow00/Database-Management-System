@@ -17,7 +17,7 @@ select option in "${options[@]}"
 do
     case $option in
         "Create Database")
-            echo "Create Database selected"
+            create_database
             ;;
         "List Databases")
             echo "List Databases selected"
