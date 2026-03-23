@@ -44,3 +44,4 @@ All operations are performed through a **Command Line Interface (CLI)**.
 - https://www.youtube.com/watch?v=x5B6p7JoNwE
 - https://www.youtube.com/watch?v=zfPFzhoIKnU
 - https://linuxsimply.com/bash-scripting-tutorial/variables/types/ps3/
+- https://medium.com/@gudisagebi1/conditions-in-bash-scripting-if-statements-94e883a8d493
