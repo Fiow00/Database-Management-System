@@ -20,10 +20,13 @@ do
             create_database
             ;;
         "List Databases")
-            echo "List Databases selected"
+            list_databases
             ;;
         "Connect to Database")
             echo "Connect to Database selected"
+            ;;
+        "Drop Database")
+            drop_database
             ;;
         "Exit")
             echo "GoodBye"
