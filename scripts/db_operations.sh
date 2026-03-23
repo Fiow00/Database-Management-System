@@ -11,11 +11,22 @@ create_database() {
     fi
 
     # Check if already exists
-    if [[ -d "database/$db_name" ]]
+    if [[ -d "databases/$db_name" ]]
     then
         echo "Database already exists"
     else
         mkdir "databases/$db_name"
         echo "Database '$db_name' created successfully"
+    fi
+}
+
+list_databases() {
+    # Check if databases directory is empty
+    if [ -z "$(ls databases)" ]
+    then
+        echo "No databases were found"
+    else
+        echo "Databases: "
+        ls databases
     fi
 }
