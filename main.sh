@@ -23,7 +23,7 @@ do
             list_databases
             ;;
         "Connect to Database")
-            echo "Connect to Database selected"
+            connect_database
             ;;
         "Drop Database")
             drop_database

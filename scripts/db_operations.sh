@@ -50,3 +50,23 @@ drop_database() {
         echo "Database '$db_name' deleted succesfully"
     fi
 }
+
+connect_database() {
+    read -p "Enter a database name to connect: " db_name
+
+    # Check if empyt
+    if [[ -z "$db_name" ]]
+    then
+        echo "Database name cannot be empty"
+        return
+    fi
+
+    # Check if exists
+    if [[ ! -d "databases/$db_name" ]]
+    then
+        echo "Database '$db_name' does not exist"
+    else
+        current_db="databases/$db_name"
+        echo "Connect to database '$db_name'"
+    fi
+}
