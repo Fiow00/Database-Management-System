@@ -25,6 +25,9 @@ do
         "Connect to Database")
             echo "Connect to Database selected"
             ;;
+        "Drop Database")
+            drop_database
+            ;;
         "Exit")
             echo "GoodBye"
             break
