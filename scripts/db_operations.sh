@@ -1,5 +1,7 @@
 #! /bin/bash
 
+source table_operations.sh
+
 create_database() {
     read -p "Enter database name: " db_name
 
@@ -68,5 +70,7 @@ connect_database() {
     else
         current_db="databases/$db_name"
         echo "Connect to database '$db_name'"
+        table_menu
+
     fi
 }
