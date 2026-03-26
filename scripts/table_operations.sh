@@ -17,7 +17,7 @@ table_menu() {
                 echo "Drop Table selected"
                 ;;
             "Insert")
-                echo "Insert selected"
+                insert_into_table
                 ;;
             "Select")
                 echo "Select selected"
@@ -103,4 +103,56 @@ create_table() {
     done
 
     echo "Table '$table_name' created successfully"
+}
+
+insert_into_table() {
+    read -p "Enter table name: " table_name
+
+    # Check if exists
+    if [[ ! -f "$current_db/$table_name" ]]
+    then
+        echo "Table does not exist"
+        return
+    fi
+
+    meta_file="$current_db/$table_name.meta"
+    data_file="$current_db/$table_name"
+
+    row=""
+
+    while IFS=":" read -r column_name column_type column_key <&3
+    do
+        read -p "Enter value for $column_name ($column_type): " value
+
+        # Type validation
+        if [[ "$column_type" == "int" ]]
+        then
+            if ! [[ "$value" =~ ^[0-9]+$ ]]
+            then
+                echo "Invalid integer value"
+                return
+            fi
+        fi
+
+        # Primary key validation
+        if [[ "$column_key" == "pk" ]]
+        then
+            if cut -d ":" -f1 "$data_file" | grep -w "$value" > /dev/null
+            then
+                echo "Primary key must be unique"
+                return
+            fi
+        fi
+
+        if [[ -z "$row" ]]
+        then
+            row="$value"
+        else
+            row="$row:$value"
+        fi
+    done 3< "$meta_file"
+
+    echo "$row" >> "$data_file"
+
+    echo "Data inserted successfully"
 }

@@ -1,7 +1,5 @@
 #! /bin/bash
 
-source table_operations.sh
-
 create_database() {
     read -p "Enter database name: " db_name
 
