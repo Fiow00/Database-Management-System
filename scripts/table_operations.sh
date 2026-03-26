@@ -20,7 +20,7 @@ table_menu() {
                 echo "Insert selected"
                 ;;
             "Select")
-                echo "Select selected"
+                select_from_table
                 ;;
             "Update")
                 echo "Update selected"
@@ -103,4 +103,44 @@ create_table() {
     done
 
     echo "Table '$table_name' created successfully"
+}
+
+select_from_table() {
+   
+    if [[ -z "$current_db" ]]
+    then
+        echo "You must connect to a database first"
+        return
+    fi
+
+    read -p "Enter table name: " table_name
+
+    table_path="$current_db/$table_name"
+    meta_path="$current_db/$table_name.meta"
+
+   
+    if [[ ! -f "$table_path" ]]
+    then
+        echo "Table does not exist"
+        return
+    fi
+
+    
+    header=""
+
+    while IFS=: read -r col_name col_type col_key
+    do
+        header="$header\t$col_name"
+    done < "$meta_path"
+
+    echo -e "$header"
+    echo "----------------------------------"
+
+   
+    awk -F: '{
+        for(i=1; i<=NF; i++) {
+            printf "%-10s", $i
+        }
+        printf "\n"
+    }' "$table_path"
 }
