@@ -26,7 +26,7 @@ table_menu() {
                 echo "Update selected"
                 ;;
             "Delete")
-                echo "Delete selected"
+                delete_from_table()
                 ;;
             "Back")
                 break
@@ -105,6 +105,7 @@ create_table() {
     echo "Table '$table_name' created successfully"
 }
 
+
 select_from_table() {
    
     if [[ -z "$current_db" ]]
@@ -143,4 +144,46 @@ select_from_table() {
         }
         printf "\n"
     }' "$table_path"
+}
+
+delete_from_table() {
+    
+    if [[ -z "$current_db" ]]
+    then
+        echo "You must connect to a database first"
+        return
+    fi
+
+    read -p "Enter table name: " table_name
+
+    table_path="$current_db/$table_name"
+
+    
+    if [[ ! -f "$table_path" ]]
+    then
+        echo "Table does not exist"
+        return
+    fi
+
+    read -p "Enter primary key value to delete: " pk_value
+
+   
+    if [[ -z "$pk_value" ]]
+    then
+        echo "Primary key cannot be empty"
+        return
+    fi
+
+   
+    if ! grep -q "^$pk_value:" "$table_path"
+    then
+        echo "Record not found"
+        return
+    fi
+
+    
+    grep -v "^$pk_value:" "$table_path" > temp_file
+    mv temp_file "$table_path"
+
+    echo "Record deleted successfully"
 }
