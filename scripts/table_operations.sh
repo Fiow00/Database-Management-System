@@ -26,7 +26,7 @@ table_menu() {
                 echo "Update selected"
                 ;;
             "Delete")
-                delete_from_table()
+                delete_from_table
                 ;;
             "Back")
                 break
