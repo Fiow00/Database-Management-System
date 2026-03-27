@@ -73,48 +73,71 @@ create_table() {
 
 
 insert_into_table() {
-    if [[ -z "$current_db" ]]; then
-        echo "Connect to DB first"
+
+    # Check if connected to a database
+    if [[ -z "$current_db" ]]
+    then
+        echo "You must connect to a database first"
         return
     fi
 
     read -p "Enter table name: " table_name
 
-    data_file="$current_db/$table_name"
-    meta_file="$current_db/$table_name.meta"
-
-    if [[ ! -f "$data_file" ]]; then
+    # Check if table exists
+    if [[ ! -f "$current_db/$table_name" ]]
+    then
         echo "Table does not exist"
         return
     fi
 
+    meta_file="$current_db/$table_name.meta"
+    data_file="$current_db/$table_name"
+
     row=""
 
-    while IFS=":" read -r col_name col_type col_key; do
-        read -p "Enter $col_name ($col_type): " value
+    while IFS=":" read -r column_name column_type column_key <&3
+    do
+        read -p "Enter value for $column_name ($column_type): " value
 
-        if [[ "$col_type" == "int" && ! "$value" =~ ^[0-9]+$ ]]; then
-            echo "Invalid int"
+        # Check empty value
+        if [[ -z "$value" ]]
+        then
+            echo "Value for '$column_name' cannot be empty"
             return
         fi
 
-        if [[ "$col_key" == "pk" ]]; then
-            if grep -q "^$value:" "$data_file"; then
-                echo "PK must be unique"
+        # Type validation
+        if [[ "$column_type" == "int" ]]
+        then
+            if ! [[ "$value" =~ ^[0-9]+$ ]]
+            then
+                echo "Invalid integer value for column '$column_name'"
                 return
             fi
         fi
 
-        if [[ -z "$row" ]]; then
+        # Primary key validation
+        if [[ "$column_key" == "pk" ]]
+        then
+            if cut -d ":" -f1 "$data_file" | grep -w "$value" > /dev/null
+            then
+                echo "Primary key must be unique"
+                return
+            fi
+        fi
+
+        if [[ -z "$row" ]]
+        then
             row="$value"
         else
             row="$row:$value"
         fi
 
-    done < "$meta_file"
+    done 3< "$meta_file"
 
     echo "$row" >> "$data_file"
-    echo "Inserted successfully"
+
+    echo "Row inserted successfully into '$table_name'"
 }
 
 
