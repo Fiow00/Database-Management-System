@@ -217,8 +217,6 @@ update_table() {
     fi
 
     read -p "Enter primary key value: " pk
-
-   
     if ! grep -q "^$pk:" "$table_path"; then
         echo "Record not found"
         return
