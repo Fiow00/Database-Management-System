@@ -9,7 +9,7 @@ table_menu() {
     do
         case $choice in
             "Create Table") create_table ;;
-            "List Tables") echo "List Tables selected" ;;
+            "List Tables") list_tables ;;
             "Drop Table") echo "Drop Table selected" ;;
             "Insert") insert_into_table ;;
             "Select") select_from_table ;;
@@ -271,4 +271,22 @@ update_table() {
     mv tmp "$table_path"
 
     echo "Updated successfully"
+}
+
+list_tables() {
+    # Check if connected to a database
+    if [[ -z "$current_db" ]]; then
+        echo "You must connect to a database first"
+        return
+    fi
+
+    # Check if there are any tables in the database
+    table_count=$(ls "$current_db" 2>/dev/null | grep -v "\.meta$" | wc -l)
+    
+    if [[ $table_count -eq 0 ]]; then
+        echo "No tables found in this database"
+    else
+        echo "Tables in database:"
+        ls "$current_db" | grep -v "\.meta$"
+    fi
 }
