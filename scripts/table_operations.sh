@@ -10,7 +10,7 @@ table_menu() {
         case $choice in
             "Create Table") create_table ;;
             "List Tables") list_tables ;;
-            "Drop Table") echo "Drop Table selected" ;;
+            "Drop Table") drop_table ;;
             "Insert") insert_into_table ;;
             "Select") select_from_table ;;
             "Update") update_table      ;;
@@ -289,4 +289,35 @@ list_tables() {
         echo "Tables in database:"
         ls "$current_db" | grep -v "\.meta$"
     fi
+}
+
+drop_table() {
+    # Check if connected to a database
+    if [[ -z "$current_db" ]]; then
+        echo "You must connect to a database first"
+        return
+    fi
+
+    read -p "Enter table name to drop: " table_name
+
+    # Check if table name is empty
+    if [[ -z "$table_name" ]]; then
+        echo "Table name cannot be empty"
+        return
+    fi
+
+    table_path="$current_db/$table_name"
+    meta_path="$current_db/$table_name.meta"
+
+    # Check if table exists
+    if [[ ! -f "$table_path" ]]; then
+        echo "Table '$table_name' does not exist"
+        return
+    fi
+
+    # Delete both table data file and metadata file
+    rm "$table_path"
+    rm "$meta_path" 2>/dev/null
+
+    echo "Table '$table_name' dropped successfully"
 }
