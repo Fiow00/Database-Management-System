@@ -9,31 +9,38 @@ source scripts/helpers.sh
 current_db=""
 
 # Main menu
-PS3="Choose an option: "
+while true
+    do
+        PS3="Choose an option: "
 
-options=("Create Database" "List Databases" "Connect to Database" "Drop Database" "Exit")
+        options=("Create Database" "List Databases" "Connect to Database" "Drop Database" "Exit")
 
-select option in "${options[@]}"
-do
-    case $option in
-        "Create Database")
-            create_database
-            ;;
-        "List Databases")
-            list_databases
-            ;;
-        "Connect to Database")
-            connect_database
-            ;;
-        "Drop Database")
-            drop_database
-            ;;
-        "Exit")
-            echo "GoodBye"
-            break
-            ;;
-        *)
-            echo "Invalid option"
-            ;;
-    esac
-done
+        select option in "${options[@]}"
+        do
+            case $option in
+                "Create Database")
+                    create_database
+                    break
+                    ;;
+                "List Databases")
+                    list_databases
+                    break
+                    ;;
+                "Connect to Database")
+                    connect_database
+                    break
+                    ;;
+                "Drop Database")
+                    drop_database
+                    break
+                    ;;
+                "Exit")
+                    echo "GoodBye"
+                    exit
+                    ;;
+                *)
+                    echo "Invalid option"
+                    ;;
+            esac
+        done
+    done
