@@ -13,7 +13,7 @@ table_menu() {
             "Drop Table") echo "Drop Table selected" ;;
             "Insert") insert_into_table ;;
             "Select") select_from_table ;;
-            "Update") echo "Update selected" ;;
+            "Update") update_table      ;;
             "Delete") delete_from_table ;;
             "Back") break ;;
             *) echo "Invalid option" ;;
@@ -198,4 +198,77 @@ delete_from_table() {
     mv tmp "$table_path"
 
     echo "Deleted successfully"
+}
+
+update_table() {
+    if [[ -z "$current_db" ]]; then
+        echo "Connect to DB first"
+        return
+    fi
+
+    read -p "Enter table name: " table_name
+
+    table_path="$current_db/$table_name"
+    meta_path="$current_db/$table_name.meta"
+
+    if [[ ! -f "$table_path" ]]; then
+        echo "Table not found"
+        return
+    fi
+
+    read -p "Enter primary key value: " pk
+    if ! grep -q "^$pk:" "$table_path"; then
+        echo "Record not found"
+        return
+    fi
+
+    
+    echo "Columns:"
+    col_num=1
+    declare -a col_names
+    declare -a col_types
+
+    while IFS=: read -r col_name col_type col_key; do
+        echo "$col_num) $col_name ($col_type)"
+        col_names[$col_num]="$col_name"
+        col_types[$col_num]="$col_type"
+        ((col_num++))
+    done < "$meta_path"
+
+    read -p "Choose column number: " choice
+
+    
+    if ! [[ "$choice" =~ ^[0-9]+$ ]] || [[ -z "${col_names[$choice]}" ]]; then
+        echo "Invalid choice"
+        return
+    fi
+
+    read -p "Enter new value: " new_value
+
+   
+    if [[ "${col_types[$choice]}" == "int" && ! "$new_value" =~ ^[0-9]+$ ]]; then
+        echo "Invalid int value"
+        return
+    fi
+
+   
+    if [[ "$choice" -eq 1 ]]; then
+        if grep -q "^$new_value:" "$table_path"; then
+            echo "Primary key must be unique"
+            return
+        fi
+    fi
+
+
+    awk -F: -v pk="$pk" -v col="$choice" -v val="$new_value" 'BEGIN{OFS=":"}
+    {
+        if ($1 == pk) {
+            $col = val
+        }
+        print
+    }' "$table_path" > tmp
+
+    mv tmp "$table_path"
+
+    echo "Updated successfully"
 }
